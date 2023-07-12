@@ -92,12 +92,12 @@ Thumbs.db
 /.cache
 *,cover
 htmlcov
-
-# Things specific to this project #
-###################################
 /.anaconda
 /.env
 
+# Things specific to this project #
+###################################
+/data
 
 
 
