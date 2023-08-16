@@ -31,7 +31,7 @@ Please note that this project is developed using Python 3.6.
 To run the Dash application, the provided `main.py` script can be used. This includes the following steps:
 
 1. Install the required packages: `pip install -r requirements.txt`
-2. Navigate to the src directory: `cd src`
+2. Navigate to the `src` directory: `cd src`
 3. Run the Dash application using the main script:
 
    ```bash
