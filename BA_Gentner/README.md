@@ -33,10 +33,8 @@ This project contains the experimental prototype for the bachelor thesis "Combin
 
 To run the Dash application, the provided `main.py` script can be used. This includes the following steps:
 
-1. Clone the repository: `git clone https://github.com/yourusername/interpretable-ts-anomaly-detection/BA_Gentner.git`
-2. Install the required packages: `pip install -r requirements.txt`
-3. Navigate to the project directory: `cd your-project`
-4. Run the Dash application using the main script:
+1. Install the required packages: `pip install -r requirements.txt`
+2. Run the Dash application using the main script:
 
    ```bash
    python main.py
