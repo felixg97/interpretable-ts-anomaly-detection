@@ -17,6 +17,8 @@ To run this project, the following libraries are required:
 - `tensorflow-datasets`
 - `numpy`
 - `matplotlib`
+- `PyQt5`
+- `opencv-python-headless`
 - `hdbscan`
 - `scikit-learn`
 - `scikit-image`
@@ -24,7 +26,6 @@ To run this project, the following libraries are required:
 - `shap`
 
 Please note that this project is developed using Python 3.6.
-
 
 ## Usage
 
