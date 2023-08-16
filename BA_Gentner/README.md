@@ -1,5 +1,7 @@
 # Combining Explainable AI, Few-Shot Learning, and Visual-Interactive Labeling: A Survey and Experimental Study
 
+This project contains the experimental prototype for the bachelor thesis "Combining Explainable AI, Few-Shot Learning, and Visual-Interactive Labeling: A Survey and Experimental Study".
+
 ## Table of Contents
 
 - [Requirements](#requirements)
@@ -25,10 +27,6 @@ Please note that this project is developed using Python 3.6.
 
 
 ## Usage
-
-This project contains the experimental prototype for the bachelor thesis "Combining Explainable AI, Few-Shot Learning, and Visual-Interactive Labeling: A Survey and Experimental Study".
-
-### Running the Dash Application
 
 To run the Dash application, the provided `main.py` script can be used. This includes the following steps:
 
