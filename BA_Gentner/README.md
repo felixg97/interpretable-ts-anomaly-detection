@@ -1,6 +1,6 @@
 # Combining Explainable AI, Few-Shot Learning, and Visual-Interactive Labeling: A Survey and Experimental Study
 
-This project contains the experimental prototype for the bachelor thesis "Combining Explainable AI, Few-Shot Learning, and Visual-Interactive Labeling: A Survey and Experimental Study".
+This project contains the experimental prototype of the bachelor thesis "Combining Explainable AI, Few-Shot Learning, and Visual-Interactive Labeling: A Survey and Experimental Study".
 
 ## Table of Contents
 
