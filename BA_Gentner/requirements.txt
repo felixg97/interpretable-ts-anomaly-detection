@@ -1,6 +1,6 @@
 dash
 dash-bootstrap-components==1.2.1
-tensorflow
+tensorflow==2.6.2
 tensorflow-datasets==4.5.2
 numpy==1.19.5
 matplotlib==3.3.4
