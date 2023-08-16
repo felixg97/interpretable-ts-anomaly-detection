@@ -9,18 +9,17 @@
 
 To run this project, the following libraries are required:
 
-- `python` (version 3.6)
-- `dash` (version 2.11.1)
-- `dash-bootstrap-components` (version 1.2.1)
-- `tensorflow` (version 2.6.2)
-- `tensorflow-datasets` (version 4.5.2)
-- `numpy` (version 1.19.5)
-- `matplotlib` (version 3.3.4)
-- `hdbscan` (version 0.8.15)
-- `scikit-learn` (version 0.24.2)
-- `scikit-image` (version 0.17.2)
-- `lime` (version 0.2.0.1)
-- `shap` (version 0.39.0)
+- `dash`
+- `dash-bootstrap-components`
+- `tensorflow`
+- `tensorflow-datasets`
+- `numpy`
+- `matplotlib`
+- `hdbscan`
+- `scikit-learn`
+- `scikit-image`
+- `lime`
+- `shap`
 
 Please note that this project is developed using Python 3.6.
 
@@ -34,10 +33,13 @@ This project contains the experimental prototype for the bachelor thesis "Combin
 To run the Dash application, the provided `main.py` script can be used. This includes the following steps:
 
 1. Install the required packages: `pip install -r requirements.txt`
-2. Run the Dash application using the main script:
+2. Navigate to the src directory: `cd src`
+3. Run the Dash application using the main script:
 
    ```bash
    python main.py
+
+4. Open the Dash application in the browser at [http://127.0.0.1:8050/](http://127.0.0.1:8050/) 
 
 The following figure illustrates the structure of the prototype:
 
