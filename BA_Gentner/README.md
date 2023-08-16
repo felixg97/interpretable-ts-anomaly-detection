@@ -41,6 +41,6 @@ To run the Dash application, the provided `main.py` script can be used. This inc
    ```bash
    python main.py
 
-The following Figure illustrates the structure of the prototype:
+The following figure illustrates the structure of the prototype:
 
 ![Project Screenshot](images/structure_of_prototype.png)
