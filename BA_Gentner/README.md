@@ -25,8 +25,6 @@ To run this project, the following libraries are required:
 - `lime`
 - `shap`
 
-Please note that this project is developed using Python 3.6.
-
 ## Usage
 
 To run the Dash application, the provided `main.py` script can be used. This includes the following steps:
