@@ -12,10 +12,10 @@ import hdbscan
 image_size = (28, 28)
 
 def load_data():
-    # Load MNIST dataset from TensorFlow Datasets
+    # Load MNIST train dataset from TensorFlow Datasets
     dataset = tfds.load('mnist', split='train', data_dir=r'C:/mnist')
 
-    images, labels = [], []
+    images = []
 
     # Iterate over the dataset and collect images
     for img_label in dataset:
@@ -24,7 +24,7 @@ def load_data():
 
     images = np.array(images)
 
-    return images, labels
+    return images
 
 images = load_data()
 

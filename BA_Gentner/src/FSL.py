@@ -47,12 +47,11 @@ def register_callbacks_fsl(app):
         Input({"type": "up-button", "index": ALL}, "n_clicks"),
         Input({"type": "down-button", "index": ALL}, "n_clicks"),
         State("layer-container", "children"),
-        State("total-layers", "children"),
         prevent_initial_call=True
     )
     # Callback function executed when adding, deleting, or reordering custom layers
     def update_layer_container(n_clicks, delete_clicks, layer_types, up_clicks, down_clicks,
-                               existing_layers, total_layers):
+                               existing_layers):
 
         # Get the ID of the component that triggered the callback
         ctx = dash.callback_context
@@ -61,7 +60,7 @@ def register_callbacks_fsl(app):
         layers = existing_layers or []
         total_layers = len(layers)
 
-        # Add a new layer if the "Add Layer" button was clicked
+        # Add a new layer if the 'Add Layer' button was clicked
         if triggered_id == "add-layer-button":
             new_layer_index = len(layers)
             layer = create_layer_div(new_layer_index)
@@ -132,7 +131,7 @@ def register_callbacks_fsl(app):
         State("layer-container", "children"),
         State("data-augmentation-checklist", 'value')
     )
-    # Callback function executed when the "Train Model" button is clicked
+    # Callback function executed when the 'Train Model' button is clicked
     def train_model(n_clicks, selected_model, selected_layers, num_episodes, num_inner_updates, num_epochs,
                     learning_rate, batch_size, layers, data_augmentation):
         is_loading = n_clicks is not None
@@ -141,7 +140,7 @@ def register_callbacks_fsl(app):
         alert_explanation = dbc.Alert(f"Please train the model", dismissable=False,
                                       color="info")
 
-        # Return alerts if the "Train Model" button has not been clicked yet
+        # Return alerts if the 'Train Model' button has not been clicked yet
         if n_clicks is None:
             alert_training = dbc.Alert(f"Please train the model", dismissable=False, color="info")
             return True, [], [], alert_training, html.Div(), alert_explanation
@@ -258,9 +257,9 @@ def register_callbacks_fsl(app):
         [Input("train-button", "n_clicks")],
         [State("tabs", "value")]
     )
-    # Callback function executed when the train button is clicked
+    # Callback function executed when the 'Train Model' button is clicked
     def switch_tab(n_clicks, current_tab):
-        # Switch to the results tab if the train button is clicked
+        # Switch to the results tab if the 'Train Model' button is clicked
         if n_clicks is None:
             return current_tab
         else:
@@ -344,7 +343,7 @@ def get_layer_details(layer_type, index):
                 # Input field for number of units
                 html.Label("Num Units:", style={"margin": "0px 5px 0px 15px"}),
                 dcc.Input(
-                    value=10 if index == 5 else 128,
+                    value=10 if index == 5 else 128, # Default values for pre-defined layers based on index
                     type="number",
                     id={"type": "num-units", "index": index},
                     style={"margin": "0px 5px 0px 5px", "width": "100px"}
@@ -357,7 +356,7 @@ def get_layer_details(layer_type, index):
                         {"label": "Sigmoid", "value": "sigmoid"},
                         {"label": "Softmax", "value": "softmax"}
                     ],
-                    value="softmax" if index == 5 else "relu",
+                    value="softmax" if index == 5 else "relu", # Default values for pre-defined layers based on index
                     clearable=False,
                     id={"type": "activation", "index": index},
                     style={"width": "100px", "margin": "0px 0px 0px 5px"}
@@ -464,7 +463,7 @@ def create_keras_model(layers):
     return model
 
 def create_pretrained_model():
-    # Load the VGG16 model trained on ImageNet
+    # Load the VGG16 model with weights initialized on ImageNet
     base_model = VGG16(weights='imagenet', include_top=False, input_shape=(32, 32, 3))
 
     # Get the output of the last convolutional layer
@@ -515,7 +514,7 @@ def load_data(data_augmentation):
     return train_images, train_labels, test_images, test_labels, val_images, val_labels
 
 def load_test_data():
-    # Load MNIST dataset from TensorFlow Datasets
+    # Load MNIST test dataset from TensorFlow Datasets
     dataset = tfds.load('mnist', split='test', data_dir=r'C:/mnist')
 
     images = []
@@ -536,10 +535,10 @@ def load_test_data():
 
 def augment_data(image, data_augmentation):
     if "random-left-right" in data_augmentation:
-        # Flip the image from left to right
+        # Flip the image randomly from left to right
         image = tf.image.random_flip_left_right(image)
     if "random-up-down" in data_augmentation:
-        # Flip the image from up to down
+        # Flip the image randomly from up to down
         image = tf.image.random_flip_up_down(image)
     if "random-rotation" in data_augmentation:
         # Rotate the image randomly by 0, 90, 180, or 270 degrees
@@ -552,22 +551,24 @@ def preprocess_data(image, label):
     return image, label
 
 def maml(final_model, num_inner_updates, learning_rate, batch_size, num_episodes, data_augmentation, pretrained_model):
-    # Load and preprocess images and labels
+    # Load train, test, validation, and ground truth test images and labels
     train_images, train_labels, test_images, test_labels, val_images, val_labels = load_data(data_augmentation)
     ground_truth_test_images, ground_truth_test_labels = load_test_data()
 
-    # Resize the images to 32x32 if using a pretrained model
+    # Resize images to 32x32 if using a pretrained model
     if pretrained_model:
         train_images = tf.image.resize(train_images, (32, 32))
         test_images = tf.image.resize(test_images, (32, 32))
         ground_truth_test_images = tf.image.resize(ground_truth_test_images, (32, 32))
         val_images = tf.image.resize(val_images, (32, 32))
 
+    # Preprocess images
     train_images, train_labels = preprocess_data(train_images, train_labels)
     test_images, test_labels = preprocess_data(test_images, test_labels)
     ground_truth_test_images, ground_truth_test_labels = preprocess_data(val_images, val_labels)
     val_images, val_labels = preprocess_data(val_images, val_labels)
 
+    # Convert images to RGB
     train_images = tf.image.grayscale_to_rgb(images=tf.convert_to_tensor(train_images))
     test_images = tf.image.grayscale_to_rgb(images=tf.convert_to_tensor(test_images))
     ground_truth_test_images = tf.image.grayscale_to_rgb(images=tf.convert_to_tensor(ground_truth_test_images))
@@ -731,7 +732,7 @@ def maml(final_model, num_inner_updates, learning_rate, batch_size, num_episodes
     ]
 
 def regular_model(final_model, batch_size, epochs, learning_rate, data_augmentation, pretrained_model):
-    # Load and preprocess images and labels
+    # Load train, test, validation, and ground truth test images and labels
     train_images, train_labels, test_images, test_labels, val_images, val_labels = load_data(data_augmentation)
     ground_truth_test_images, ground_truth_test_labels = load_test_data()
 
@@ -742,11 +743,13 @@ def regular_model(final_model, batch_size, epochs, learning_rate, data_augmentat
         ground_truth_test_images = tf.image.resize(ground_truth_test_images, (32, 32))
         val_images = tf.image.resize(val_images, (32, 32))
 
+    # Preprocess images
     train_images, train_labels = preprocess_data(train_images, train_labels)
     test_images, test_labels = preprocess_data(test_images, test_labels)
     ground_truth_test_images, ground_truth_test_labels = preprocess_data(ground_truth_test_images, ground_truth_test_labels)
     val_images, val_labels = preprocess_data(val_images, val_labels)
 
+    # Convert images to RGB
     train_images = tf.image.grayscale_to_rgb(images=tf.convert_to_tensor(train_images))
     test_images = tf.image.grayscale_to_rgb(images=tf.convert_to_tensor(test_images))
     ground_truth_test_images = tf.image.grayscale_to_rgb(images=tf.convert_to_tensor(ground_truth_test_images))

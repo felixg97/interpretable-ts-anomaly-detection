@@ -14,7 +14,7 @@ import tensorflow_datasets as tfds
 import tensorflow as tf
 
 def load_data():
-    # Load MNIST dataset from TensorFlow Datasets
+    # Load MNIST train dataset from TensorFlow Datasets
     dataset = tfds.load('mnist', split='train', data_dir=r'C:/mnist')
 
     images = []
@@ -147,14 +147,12 @@ def register_callbacks_vial(app):
          Output('mse-vs-num-images', 'figure', allow_duplicate=True)],
         Output('image-frame', 'children', allow_duplicate=True),
         Output('tabs-div', 'style'),
-        [Input('mse-vs-num-images', 'clickData'),
-         Input('mse-vs-num-images', 'selectedData')],
-        [State('mse-vs-num-images', 'figure')],
+        [Input('mse-vs-num-images', 'clickData')],
         prevent_initial_call=True
     )
     # Callback function executed when the MSE plot is clicked
-    def update_plots(click_data, selected_data, mse_vs_num_images_fig):
-        # Get the class threshold from the click data of the MSE plot
+    def update_plots(click_data):
+        # Get the class threshold from the point where the MSE plot is clicked
         class_threshold = click_data['points'][0]['y']
 
         # Remove outliers from the selected cluster based on the class threshold
@@ -307,7 +305,7 @@ def register_callbacks_vial(app):
             cluster_labels_letters = [value_to_letter[value] for value in loaded_cluster_labels]
 
             for label_var, letter in zip(label_variables, cluster_names[1:]):
-                # Replace the cluster names with the assigned labels
+                # Replace the letters with the assigned labels
                 cluster_labels_letters = [label_var if label == letter else label for label in cluster_labels_letters]
 
             # Remove outliers and save the labels and images in global variables for FSL
@@ -428,6 +426,8 @@ def reload_clusters_plot(selected_cluster):
         # Find the trace corresponding to the cluster and update its name and marker color
         fig_copy.data[i].name = f"Cluster: {cluster_name}"
         fig_copy.data[i].marker.color = color
+
+        # Set opacity of traces based on whether they are the selected cluster
         if cluster_name == selected_cluster or selected_cluster is None:
             fig_copy.data[i].marker.opacity = 1
         else:
@@ -442,7 +442,7 @@ def reload_mse_vs_num_images(selected_cluster):
     # Calculate the MSE and corresponding number of images for the selected cluster
     mse_values, num_images = calculate_mse_vs_num_images(selected_label)
 
-    # Create MSE vs. Number of Images plot
+    # Create 'MSE vs. Number of Images' plot
     mse_vs_num_images_data = [
         go.Scatter(
             x=list(num_images),
@@ -452,7 +452,7 @@ def reload_mse_vs_num_images(selected_cluster):
             line=dict(color='blue', width=2)
         )
     ]
-    # Define layout of MSE vs. Number of Images plot
+    # Define layout of 'MSE vs. Number of Images' plot
     layout = go.Layout(
         title='MSE vs. Number of Images',
         title_x=0.5,

@@ -9,23 +9,21 @@ from tensorflow.keras.models import clone_model
 image_size = (28, 28)
 
 def load_data():
-    # Load the dataset
+    # Load MNIST train dataset from TensorFlow Datasets
     dataset = tfds.load('mnist', split='train', data_dir=r'C:/mnist')
 
     images, labels = [], []
 
-    # Iterate over the dataset and collect images and labels
+    # Iterate over the dataset and collect images
     for img_label in dataset:
         image = tf.image.resize(img_label['image'], image_size)
         images.append(image.numpy())
-        labels.append(img_label['label'].numpy())
 
     images = np.array(images)
-    labels = np.array(labels)
 
-    return images, labels
+    return images
 
-images, labels = load_data()
+images = load_data()
 
 # Flatten and normalize the images
 images_flat = images.reshape(images.shape[0], -1)
@@ -73,4 +71,4 @@ for label in range(0, 10):
 
 for label in range(0, 10):
     # Save the trained autoencoders
-    autoencoder_models[label].save(f'autoencoder_model_{label}.h5')
+    autoencoder_models[label].save(f'../autoencoder_models/autoencoder_model_{label}.h5')

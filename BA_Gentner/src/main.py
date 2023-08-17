@@ -27,7 +27,7 @@ app.layout = html.Div(
 
                         html.Div(style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr', 'gap': '20px'}, children=[
 
-                            # Left side: Scatter Plot and MNIST Clusters
+                            # Left side: Scatter Plot with MNIST Clusters
                             html.Div(
                                 style={'display': 'flex', 'flexDirection': 'column'},
                                 children=[
@@ -55,7 +55,7 @@ app.layout = html.Div(
                                                      style={'width': '200px'},
                                                  )
                                              ]),
-                                    # Hidden div that contains tabs for MSE and Remove Individual Outliers
+                                    # Hidden div that contains tabs 'Reduce MSE' and 'Remove Individual Outliers'
                                     html.Div(style={'display': 'none'}, id='tabs-div', children=[
                                         dcc.Tabs(
                                             value='mse-tab',

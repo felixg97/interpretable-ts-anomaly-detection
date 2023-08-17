@@ -43,11 +43,11 @@ def register_callbacks_xai(app):
     # Callback executed when cell in confusion matrix is clicked
     def display_images(click_data):
         if click_data is not None and final_model is not None:
-            # Get the true and predicted class from the click data on the confusion matrix
+            # Get the true and predicted class from the clicked cell in the confusion matrix
             true_class = click_data['points'][0]['y']
             pred_class = click_data['points'][0]['x']
 
-            # Initialize the predicted data
+            # Initialize the text for the predicted class
             pred_class_label = ": " + str(pred_class)
             pred_class_org = pred_class
             second_text = ""
@@ -99,6 +99,7 @@ def register_callbacks_xai(app):
                 images_html.append(image_html)
 
                 # Grad-CAM
+                # Expand the image dimensions to fit the model
                 first_image = np.expand_dims(image, axis=0)
 
                 # Get Grad-CAM heatmap for the true class
@@ -109,7 +110,7 @@ def register_callbacks_xai(app):
                 icam_pred = GradCAM(final_model, pred_class, find_target_layer(final_model))
                 heatmap_pred = icam_pred.compute_heatmap(first_image)
 
-                # Create HTML element of the true Grad-CAM heatmap
+                # Create HTML element of the Grad-CAM heatmap for the true class
                 buffer = BytesIO()
                 plt.imshow(heatmap_true, alpha=0.8, extent=(0, image.shape[1], image.shape[0], 0))
                 plt.axis('off')
@@ -122,7 +123,7 @@ def register_callbacks_xai(app):
                 )
                 images_grad_cam_true.append(image_html)
 
-                # Create HTML element of the predicted Grad-CAM heatmap
+                # Create HTML element of the Grad-CAM heatmap for the predicted class
                 buffer = BytesIO()
                 plt.imshow(heatmap_pred, alpha=0.4, extent=(0, image.shape[1], image.shape[0], 0))
 
@@ -147,19 +148,19 @@ def register_callbacks_xai(app):
                                                                    top_labels=10, num_samples=500,
                                                                    segmentation_fn=segmenter, random_seed=5)
 
-                # Get LIME image and heatmap for the true class
+                # Get LIME image and mask for the true class
                 image_true, mask_true = lime_explanation.get_image_and_mask(label=true_class,
                                                                            positive_only=False,
                                                                            negative_only=False,
                                                                            hide_rest=False)
 
-                # Get LIME image and heatmap for the predicted class
+                # Get LIME image and mask for the predicted class
                 image_pred, mask_pred = lime_explanation.get_image_and_mask(label=pred_class,
                                                                            positive_only=False,
                                                                            negative_only=False,
                                                                            hide_rest=False)
 
-                # Create HTML element of the predicted LIME heatmap
+                # Create HTML element of the LIME explanation for the true class
                 rescaled_image = (mark_boundaries(image=image_pred / 2 + 0.5, label_img=mask_pred)).clip(0, 1)
                 buffer = BytesIO()
                 plt.imshow(rescaled_image)
@@ -173,7 +174,7 @@ def register_callbacks_xai(app):
                 )
                 images_lime_pred.append(image_html)
 
-                # Create HTML element of the true LIME heatmap
+                # Create HTML element of the LIME explanation for the predicted class
                 rescaled_image = (mark_boundaries(image=image_true / 2 + 0.5, label_img=mask_true)).clip(0, 1)
                 buffer = BytesIO()
                 plt.imshow(rescaled_image)
@@ -206,7 +207,7 @@ def register_callbacks_xai(app):
                 buffer.close()
 
             if images_html:
-                # Create a Dash HTML Div with organized image displays for original, Grad-CAM, LIME, and SHAP images
+                # Create a Div element containing the original, Grad-CAM, LIME, and SHAP images
                 return html.Div(style={'display': 'flex', 'justify-content': 'center'}, children=[
                     html.Div(style={'display': 'grid', 'grid-template-columns': 'repeat(6, auto)', 'gap': '20px'},
                              children=[
@@ -351,7 +352,7 @@ def load_cm(model, images, labels):
                     go.layout.Annotation(
                         x=x_val,
                         y=y_val,
-                        text=str(cm[y_val][x_val]),  # Fix the order of indices for accessing confusion matrix elements
+                        text=str(cm[y_val][x_val]),
                         showarrow=False,
                         font=dict(color='black')
                     )
@@ -370,13 +371,13 @@ def load_cm(model, images, labels):
 # https://stackoverflow.com/questions/66182884/how-to-implement-grad-cam-on-a-trained-network
 class GradCAM:
     def __init__(self, model, classIdx, layerName=None):
-        # Store the model, class index, and layer to be used when visualizing the class activation map
+        # Store the model, class index, and target layer to be used when visualizing the class activation map
         self.model = model
         self.classIdx = classIdx
         self.layerName = layerName
 
     def compute_heatmap(self, image, eps=1e-8):
-        # Define the gradient model by specifying the inputs, outputs of the final 4D layer, and outputs of the last layer
+        # Define the gradient model by specifying the inputs, outputs of the target layer, and outputs of the last layer
         gradModel = Model(
             inputs=[self.model.inputs],
             outputs=[self.model.get_layer(self.layerName).output, self.model.output])
